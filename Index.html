@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Translate · Tamil · Sinhala · English &amp; more</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Tamil:wght@400;500;600;700&family=Noto+Sans+Sinhala:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --blue:#1a73e8;
+    --blue-dark:#1557b0;
+    --blue-pale:#e8f0fe;
+    --blue-line:#d2e3fc;
+    --ink:#202124;
+    --ink-soft:#5f6368;
+    --ink-faint:#80868b;
+    --bg:#ffffff;
+    --bg-soft:#f8fafd;
+    --border:#e3e6ea;
+    --shadow:0 2px 10px rgba(60,64,67,0.12);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    min-height:100vh;
+    background:var(--bg-soft);
+    color:var(--ink);
+    font-family:'Inter', sans-serif;
+  }
+  .wrap{
+    max-width:980px;
+    margin:0 auto;
+    padding:0 20px 70px;
+  }
+  header{
+    padding:44px 16px 26px;
+    text-align:center;
+  }
+  .logo-row{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    margin-bottom:10px;
+  }
+  .logo-dot{
+    width:34px; height:34px;
+    border-radius:9px;
+    background:linear-gradient(135deg, var(--blue), #34a1ff);
+    display:flex; align-items:center; justify-content:center;
+    color:#fff;
+    font-size:1rem;
+    font-weight:700;
+  }
+  h1{
+    font-size:1.55rem;
+    font-weight:600;
+    margin:0;
+    color:var(--ink);
+  }
+  .sub{
+    font-size:0.95rem;
+    color:var(--ink-soft);
+    margin:6px 0 0;
+  }
+
+  .card{
+    background:var(--bg);
+    border:1px solid var(--border);
+    border-radius:16px;
+    box-shadow:var(--shadow);
+    overflow:visible;
+  }
+
+  /* language selector bar */
+  .lang-bar{
+    display:grid;
+    grid-template-columns:1fr 48px 1fr;
+    align-items:center;
+    border-bottom:1px solid var(--border);
+  }
+  @media (max-width:640px){ .lang-bar{ grid-template-columns:1fr 44px 1fr; } }
+
+  .lang-dropdown{ position:relative; }
+  .lang-btn{
+    width:100%;
+    background:transparent;
+    border:none;
+    padding:16px 18px;
+    font-family:'Inter', sans-serif;
+    font-size:0.98rem;
+    font-weight:600;
+    color:var(--ink);
+    text-align:left;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+    border-radius:10px;
+    transition:background .15s ease;
+  }
+  .lang-btn:hover{ background:var(--bg-soft); }
+  .lang-btn .chev{ color:var(--ink-faint); font-size:0.75rem; flex-shrink:0; }
+  .lang-btn .name{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+
+  .swap-col{ display:flex; align-items:center; justify-content:center; }
+  .swap-btn{
+    width:38px; height:38px;
+    border-radius:50%;
+    border:1px solid var(--border);
+    background:var(--bg);
+    color:var(--blue);
+    font-size:1.05rem;
+    font-weight:700;
+    cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    transition:background .15s ease, transform .2s ease;
+  }
+  .swap-btn:hover{ background:var(--blue-pale); }
+  .swap-btn.spin{ transform:rotate(180deg); }
+
+  /* dropdown panel */
+  .lang-panel{
+    position:absolute;
+    top:calc(100% + 6px);
+    left:0;
+    width:300px;
+    max-width:90vw;
+    background:var(--bg);
+    border:1px solid var(--border);
+    border-radius:12px;
+    box-shadow:0 12px 32px rgba(60,64,67,0.22);
+    z-index:50;
+    display:none;
+    overflow:hidden;
+  }
+  .lang-panel.open{ display:block; }
+  .lang-search{
+    padding:10px;
+    border-bottom:1px solid var(--border);
+  }
+  .lang-search input{
+    width:100%;
+    padding:9px 12px;
+    border:1px solid var(--border);
+    border-radius:8px;
+    font-family:'Inter', sans-serif;
+    font-size:0.92rem;
+    outline:none;
+    color:var(--ink);
+  }
+  .lang-search input:focus{ border-color:var(--blue); }
+  .lang-list{
+    max-height:280px;
+    overflow-y:auto;
+    padding:6px;
+  }
+  .lang-group-title{
+    font-size:0.72rem;
+    font-weight:700;
+    letter-spacing:0.04em;
+    color:var(--ink-faint);
+    padding:8px 10px 4px;
+    text-transform:uppercase;
+  }
+  .lang-option{
+    padding:9px 12px;
+    border-radius:8px;
+    font-size:0.92rem;
+    color:var(--ink);
+    cursor:pointer;
+    display:flex;
+    justify-content:space-between;
+    gap:8px;
+  }
+  .lang-option:hover{ background:var(--bg-soft); }
+  .lang-option.active{ background:var(--blue-pale); color:var(--blue-dark); font-weight:600; }
+  .lang-option .native{ color:var(--ink-faint); font-size:0.85rem; }
+  .lang-empty{ padding:16px; text-align:center; color:var(--ink-faint); font-size:0.88rem; }
+
+  /* panes */
+  .panes{
+    display:grid;
+    grid-template-columns:1fr 48px 1fr;
+  }
+  @media (max-width:640px){
+    .panes{ grid-template-columns:1fr; }
+    .pane-swap-col{ display:none; }
+  }
+  .pane{
+    padding:20px 22px 18px;
+    display:flex;
+    flex-direction:column;
+    min-height:200px;
+  }
+  .pane.from{ border-right:1px solid var(--border); }
+  @media (max-width:640px){ .pane.from{ border-right:none; border-bottom:1px solid var(--border);} }
+  .pane-swap-col{ background:var(--bg-soft); }
+
+  textarea{
+    flex:1;
+    min-height:150px;
+    resize:vertical;
+    border:none;
+    background:transparent;
+    outline:none;
+    font-size:1.15rem;
+    line-height:1.6;
+    color:var(--ink);
+    font-family:'Noto Sans Tamil','Noto Sans Sinhala','Inter', sans-serif;
+  }
+  textarea::placeholder{ color:var(--ink-faint); }
+  .out{
+    flex:1;
+    min-height:150px;
+    font-size:1.15rem;
+    line-height:1.6;
+    font-family:'Noto Sans Tamil','Noto Sans Sinhala','Inter', sans-serif;
+    color:var(--ink);
+    white-space:pre-wrap;
+    word-break:break-word;
+  }
+  .out.placeholder{ color:var(--ink-faint); font-size:1rem; }
+
+  .pane-foot{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-top:12px;
+  }
+  .speak-btn{
+    width:32px; height:32px;
+    border-radius:50%;
+    border:1px solid var(--border);
+    background:var(--bg);
+    color:var(--ink-soft);
+    font-size:0.9rem;
+    cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    transition:background .15s ease, color .15s ease;
+  }
+  .speak-btn:hover{ background:var(--blue-pale); color:var(--blue-dark); }
+  .speak-btn.speaking{ background:var(--blue); color:#fff; border-color:var(--blue); }
+
+  .foot-left{ display:flex; align-items:center; gap:8px; }
+  .mic-btn.listening{
+    background:#d93025;
+    color:#fff;
+    border-color:#d93025;
+    animation:pulse 1.2s ease-in-out infinite;
+  }
+  @keyframes pulse{
+    0%,100%{ box-shadow:0 0 0 0 rgba(217,48,37,0.35); }
+    50%{ box-shadow:0 0 0 8px rgba(217,48,37,0); }
+  }
+  .mic-btn:disabled{ opacity:0.4; cursor:not-allowed; }
+
+  .thanglish-toggle{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:0.85rem;
+    color:var(--ink-soft);
+    cursor:pointer;
+    user-select:none;
+  }
+  .thanglish-toggle input{
+    width:15px; height:15px;
+    accent-color:var(--blue);
+    cursor:pointer;
+  }
+
+  .bar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:14px 22px;
+    border-top:1px solid var(--border);
+    background:var(--bg-soft);
+    gap:14px;
+    flex-wrap:wrap;
+    border-radius:0 0 16px 16px;
+  }
+  .status{
+    font-size:0.85rem;
+    color:var(--ink-soft);
+    min-height:1.2em;
+  }
+  .translate-btn{
+    font-family:'Inter', sans-serif;
+    font-weight:600;
+    font-size:0.98rem;
+    background:var(--blue);
+    color:#fff;
+    border:none;
+    padding:11px 28px;
+    border-radius:24px;
+    cursor:pointer;
+    transition:background .15s ease, box-shadow .15s ease;
+    box-shadow:0 2px 6px rgba(26,115,232,0.35);
+  }
+  .translate-btn:hover{ background:var(--blue-dark); }
+  .translate-btn:disabled{ opacity:0.55; cursor:default; }
+
+  footer{
+    text-align:center;
+    margin-top:36px;
+    font-size:0.82rem;
+    color:var(--ink-faint);
+    line-height:1.7;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="logo-row">
+      <div class="logo-dot">அ</div>
+      <h1>Translate</h1>
+    </div>
+    <p class="sub">Tamil · Sinhala · English and 100+ languages</p>
+  </header>
+
+  <div class="card">
+    <div class="lang-bar">
+      <div class="lang-dropdown" id="fromDropdown">
+        <button class="lang-btn" id="fromBtn" type="button">
+          <span class="name" id="fromBtnLabel">Tamil</span>
+          <span class="chev">▾</span>
+        </button>
+        <div class="lang-panel" id="fromPanel">
+          <div class="lang-search"><input type="text" placeholder="Search language" id="fromSearch"></div>
+          <div class="lang-list" id="fromList"></div>
+        </div>
+      </div>
+      <div class="swap-col">
+        <button class="swap-btn" id="swapBtn" title="Swap languages">⇄</button>
+      </div>
+      <div class="lang-dropdown" id="toDropdown">
+        <button class="lang-btn" id="toBtn" type="button">
+          <span class="name" id="toBtnLabel">English</span>
+          <span class="chev">▾</span>
+        </button>
+        <div class="lang-panel" id="toPanel">
+          <div class="lang-search"><input type="text" placeholder="Search language" id="toSearch"></div>
+          <div class="lang-list" id="toList"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panes">
+      <div class="pane from">
+        <textarea id="inputText" placeholder="Type here..."></textarea>
+        <div class="pane-foot">
+          <div class="foot-left">
+            <button class="speak-btn" id="speakInBtn" title="Read aloud">🔊</button>
+            <button class="speak-btn mic-btn" id="micBtn" title="Speak to translate">🎤</button>
+          </div>
+          <label class="thanglish-toggle" id="thanglishWrap">
+            <input type="checkbox" id="thanglishToggle">
+            <span id="thanglishLabel">Type in English letters</span>
+          </label>
+        </div>
+      </div>
+      <div class="pane-swap-col"></div>
+      <div class="pane to">
+        <div class="out placeholder" id="outputText">Translation appears here</div>
+        <div class="pane-foot">
+          <button class="speak-btn" id="speakOutBtn" title="Read aloud">🔊</button>
+          <span></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="bar">
+      <div class="status" id="status"></div>
+      <button class="translate-btn" id="translateBtn">Translate</button>
+    </div>
+  </div>
+
+  <footer>Powered by Google &amp; MyMemory translation engines. Quality is best-effort — double-check anything important with a fluent speaker.</footer>
+</div>
+
+<script>
+const NATIVE_LABEL = { ta: 'தமிழ்', en: 'English', si: 'සිංහල' };
+const ALL_LANGUAGES = [
+  ['af','Afrikaans'],['sq','Albanian'],['am','Amharic'],['ar','Arabic'],['hy','Armenian'],
+  ['az','Azerbaijani'],['eu','Basque'],['be','Belarusian'],['bn','Bengali'],['bs','Bosnian'],
+  ['bg','Bulgarian'],['ca','Catalan'],['ceb','Cebuano'],['zh-CN','Chinese (Simplified)'],
+  ['zh-TW','Chinese (Traditional)'],['co','Corsican'],['hr','Croatian'],['cs','Czech'],
+  ['da','Danish'],['nl','Dutch'],['en','English'],['eo','Esperanto'],['et','Estonian'],
+  ['fi','Finnish'],['fr','French'],['fy','Frisian'],['gl','Galician'],['ka','Georgian'],
+  ['de','German'],['el','Greek'],['gu','Gujarati'],['ht','Haitian Creole'],['ha','Hausa'],
+  ['haw','Hawaiian'],['he','Hebrew'],['hi','Hindi'],['hmn','Hmong'],['hu','Hungarian'],
+  ['is','Icelandic'],['ig','Igbo'],['id','Indonesian'],['ga','Irish'],['it','Italian'],
+  ['ja','Japanese'],['jw','Javanese'],['kn','Kannada'],['kk','Kazakh'],['km','Khmer'],
+  ['ko','Korean'],['ku','Kurdish'],['ky','Kyrgyz'],['lo','Lao'],['la','Latin'],
+  ['lv','Latvian'],['lt','Lithuanian'],['lb','Luxembourgish'],['mk','Macedonian'],
+  ['mg','Malagasy'],['ms','Malay'],['ml','Malayalam'],['mt','Maltese'],['mi','Maori'],
+  ['mr','Marathi'],['mn','Mongolian'],['my','Myanmar (Burmese)'],['ne','Nepali'],
+  ['no','Norwegian'],['ny','Nyanja (Chichewa)'],['or','Odia (Oriya)'],['ps','Pashto'],
+  ['fa','Persian'],['pl','Polish'],['pt','Portuguese'],['pa','Punjabi'],['ro','Romanian'],
+  ['ru','Russian'],['sm','Samoan'],['gd','Scots Gaelic'],['sr','Serbian'],['st','Sesotho'],
+  ['sn','Shona'],['sd','Sindhi'],['si','Sinhala'],['sk','Slovak'],['sl','Slovenian'],
+  ['so','Somali'],['es','Spanish'],['su','Sundanese'],['sw','Swahili'],['sv','Swedish'],
+  ['tl','Tagalog (Filipino)'],['tg','Tajik'],['ta','Tamil'],['tt','Tatar'],['te','Telugu'],
+  ['th','Thai'],['tr','Turkish'],['tk','Turkmen'],['uk','Ukrainian'],['ur','Urdu'],
+  ['ug','Uyghur'],['uz','Uzbek'],['vi','Vietnamese'],['cy','Welsh'],['xh','Xhosa'],
+  ['yi','Yiddish'],['yo','Yoruba'],['zu','Zulu']
+];
+const LANG_NAME_BY_CODE = Object.fromEntries(ALL_LANGUAGES.map(([c,n]) => [c,n]));
+const POPULAR = ['ta','si','en'];
+function displayName(code){
+  const base = LANG_NAME_BY_CODE[code] || code;
+  return NATIVE_LABEL[code] ? `${base} · ${NATIVE_LABEL[code]}` : base;
+}
+function shortLabel(code){
+  return NATIVE_LABEL[code] ? NATIVE_LABEL[code] : (LANG_NAME_BY_CODE[code] || code);
+}
+
+let current = { from: 'ta', to: 'en' };
+
+const inputText = document.getElementById('inputText');
+const outputText = document.getElementById('outputText');
+const translateBtn = document.getElementById('translateBtn');
+const swapBtn = document.getElementById('swapBtn');
+const statusEl = document.getElementById('status');
+const thanglishWrap = document.getElementById('thanglishWrap');
+const thanglishToggle = document.getElementById('thanglishToggle');
+const thanglishLabel = document.getElementById('thanglishLabel');
+const speakInBtn = document.getElementById('speakInBtn');
+const speakOutBtn = document.getElementById('speakOutBtn');
+
+const SPEECH_LANG = { ta: 'ta-IN', en: 'en-US', si: 'si-LK' };
+const TRANSLIT_ITC = { ta: 'ta-t-i0-und', si: 'si-t-i0-und' };
+const THANGLISH_LABEL = {
+  ta: 'Type in English letters (Thanglish)',
+  si: 'Type in English letters (Singlish)'
+};
+
+/* ---------- searchable language dropdown ---------- */
+function buildDropdown(side){
+  const btn = document.getElementById(side + 'Btn');
+  const btnLabel = document.getElementById(side + 'BtnLabel');
+  const panel = document.getElementById(side + 'Panel');
+  const search = document.getElementById(side + 'Search');
+  const list = document.getElementById(side + 'List');
+
+  function renderList(filter){
+    list.innerHTML = '';
+    const f = (filter || '').trim().toLowerCase();
+    const selected = current[side === 'from' ? 'from' : 'to'];
+
+    function addOption(code){
+      const opt = document.createElement('div');
+      opt.className = 'lang-option' + (code === selected ? ' active' : '');
+      opt.innerHTML = `<span>${LANG_NAME_BY_CODE[code]}</span>${NATIVE_LABEL[code] ? `<span class="native">${NATIVE_LABEL[code]}</span>` : ''}`;
+      opt.addEventListener('click', () => {
+        if (side === 'from') setLanguages(code, current.to);
+        else setLanguages(current.from, code);
+        closeAll();
+      });
+      list.appendChild(opt);
+    }
+
+    const popularMatches = POPULAR.filter(c => !f || LANG_NAME_BY_CODE[c].toLowerCase().includes(f) || (NATIVE_LABEL[c] && NATIVE_LABEL[c].includes(filter||'')));
+    const allMatches = ALL_LANGUAGES.filter(([c,n]) => !POPULAR.includes(c) && (!f || n.toLowerCase().includes(f)));
+
+    if (popularMatches.length){
+      const title = document.createElement('div');
+      title.className = 'lang-group-title';
+      title.textContent = 'Popular';
+      list.appendChild(title);
+      popularMatches.forEach(addOption);
+    }
+    if (allMatches.length){
+      const title = document.createElement('div');
+      title.className = 'lang-group-title';
+      title.textContent = 'All languages';
+      list.appendChild(title);
+      allMatches.forEach(([c]) => addOption(c));
+    }
+    if (!popularMatches.length && !allMatches.length){
+      const empty = document.createElement('div');
+      empty.className = 'lang-empty';
+      empty.textContent = 'No language found';
+      list.appendChild(empty);
+    }
+  }
+
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const isOpen = panel.classList.contains('open');
+    closeAll();
+    if (!isOpen){
+      panel.classList.add('open');
+      search.value = '';
+      renderList('');
+      setTimeout(() => search.focus(), 30);
+    }
+  });
+  search.addEventListener('input', () => renderList(search.value));
+  panel.addEventListener('click', (e) => e.stopPropagation());
+
+  return { updateLabel: () => { btnLabel.textContent = displayName(current[side]); } };
+}
+
+function closeAll(){
+  document.querySelectorAll('.lang-panel').forEach(p => p.classList.remove('open'));
+}
+document.addEventListener('click', closeAll);
+
+const fromDD = buildDropdown('from');
+const toDD = buildDropdown('to');
+
+function updateThanglishVisibility(){
+  if (TRANSLIT_ITC[current.from]){
+    thanglishWrap.style.display = 'flex';
+    thanglishLabel.textContent = THANGLISH_LABEL[current.from];
+  } else {
+    thanglishWrap.style.display = 'none';
+    thanglishToggle.checked = false;
+  }
+}
+
+function setLanguages(from, to){
+  current = { from, to };
+  fromDD.updateLabel();
+  toDD.updateLabel();
+  updateThanglishVisibility();
+  const placeholders = {
+    ta: 'இங்கே தட்டச்சு செய்யவும்...',
+    en: 'Type here...',
+    si: 'මෙතන ටයිප් කරන්න...'
+  };
+  inputText.placeholder = placeholders[current.from] || 'Type here...';
+  outputText.textContent = 'Translation appears here';
+  outputText.classList.add('placeholder');
+}
+
+async function transliterateText(text, fromLang){
+  const itc = TRANSLIT_ITC[fromLang];
+  if (!itc) return text;
+  try{
+    const url = `https://inputtools.google.com/request?text=${encodeURIComponent(text)}&itc=${itc}&num=1&cp=0&cs=1&ie=utf-8&oe=utf-8`;
+    const res = await fetch(url);
+    const data = await res.json();
+    if (Array.isArray(data) && data[0] === 'SUCCESS' && Array.isArray(data[1])){
+      return data[1].map(item => (item[1] && item[1][0]) ? item[1][0] : item[0]).join(' ');
+    }
+  } catch(e){ /* fall through */ }
+  return text;
+}
+
+function speak(text, langCode, btn){
+  if (!text || !('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.lang = SPEECH_LANG[langCode] || langCode || 'en-US';
+  if (btn){
+    btn.classList.add('speaking');
+    utter.onend = () => btn.classList.remove('speaking');
+    utter.onerror = () => btn.classList.remove('speaking');
+  }
+  window.speechSynthesis.speak(utter);
+}
+speakInBtn.addEventListener('click', () => speak(inputText.value.trim(), current.from, speakInBtn));
+speakOutBtn.addEventListener('click', () => {
+  const text = outputText.classList.contains('placeholder') ? '' : outputText.textContent;
+  speak(text, current.to, speakOutBtn);
+});
+
+/* ---------- voice-to-translate (mic) ---------- */
+const RECOGNITION_LANG = {
+  ta:'ta-IN', si:'si-LK', en:'en-US', hi:'hi-IN', te:'te-IN', kn:'kn-IN', ml:'ml-IN',
+  fr:'fr-FR', de:'de-DE', es:'es-ES', it:'it-IT', pt:'pt-PT', ru:'ru-RU', ja:'ja-JP',
+  ko:'ko-KR', 'zh-CN':'zh-CN', 'zh-TW':'zh-TW', ar:'ar-SA', ur:'ur-PK', bn:'bn-IN',
+  id:'id-ID', vi:'vi-VN', th:'th-TH', tr:'tr-TR', nl:'nl-NL', pl:'pl-PL'
+};
+const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
+const micBtn = document.getElementById('micBtn');
+let recognizer = null;
+let isListening = false;
+
+if (!SpeechRecognitionAPI){
+  micBtn.disabled = true;
+  micBtn.title = 'Voice input not supported in this browser';
+} else {
+  micBtn.addEventListener('click', () => {
+    if (isListening){
+      recognizer && recognizer.stop();
+      return;
+    }
+    recognizer = new SpeechRecognitionAPI();
+    recognizer.lang = RECOGNITION_LANG[current.from] || current.from || 'en-US';
+    recognizer.interimResults = false;
+    recognizer.maxAlternatives = 1;
+
+    recognizer.onstart = () => {
+      isListening = true;
+      micBtn.classList.add('listening');
+      statusEl.textContent = 'Listening…';
+    };
+    recognizer.onresult = (event) => {
+      const transcript = event.results[0][0].transcript;
+      inputText.value = transcript;
+      statusEl.textContent = '';
+      translate();
+    };
+    recognizer.onerror = (event) => {
+      statusEl.textContent = event.error === 'not-allowed'
+        ? 'Microphone access denied.'
+        : 'Could not hear you, please try again.';
+    };
+    recognizer.onend = () => {
+      isListening = false;
+      micBtn.classList.remove('listening');
+    };
+    try{
+      recognizer.start();
+    } catch(e){
+      statusEl.textContent = 'Could not start microphone.';
+    }
+  });
+}
+
+async function translate(){
+  const text = inputText.value.trim();
+  if (!text){
+    statusEl.textContent = 'Type something first.';
+    return;
+  }
+  translateBtn.disabled = true;
+  outputText.classList.remove('placeholder');
+
+  let sourceText = text;
+  if (thanglishToggle.checked && TRANSLIT_ITC[current.from]){
+    statusEl.textContent = 'Converting to script…';
+    sourceText = await transliterateText(text, current.from);
+    inputText.value = sourceText;
+  }
+
+  statusEl.textContent = 'Translating…';
+
+  try{
+    const gUrl = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${current.from}&tl=${current.to}&dt=t&q=${encodeURIComponent(sourceText)}`;
+    const res = await fetch(gUrl);
+    if (!res.ok) throw new Error('google-http-' + res.status);
+    const data = await res.json();
+    if (Array.isArray(data) && Array.isArray(data[0])){
+      const translated = data[0].map(seg => seg[0]).join('');
+      if (translated && translated.trim()){
+        outputText.textContent = translated;
+        statusEl.textContent = '';
+        translateBtn.disabled = false;
+        return;
+      }
+    }
+    throw new Error('google-empty');
+  } catch(gErr){
+    try{
+      const params = new URLSearchParams({
+        q: sourceText.slice(0, 500),
+        langpair: `${current.from}|${current.to}`,
+        de: 'olaleaf.translator@gmail.com'
+      });
+      const url = `https://api.mymemory.translated.net/get?${params.toString()}`;
+      const res2 = await fetch(url);
+      if (!res2.ok) throw new Error('Network error: ' + res2.status);
+      const data2 = await res2.json();
+      const translated2 = data2 && data2.responseData && data2.responseData.translatedText;
+      const status2 = data2 && data2.responseStatus;
+
+      if (!translated2) throw new Error('No translation returned');
+      if (String(translated2).toUpperCase().includes('MYMEMORY WARNING') || String(translated2).toUpperCase().includes('QUERY LENGTH LIMIT')){
+        outputText.textContent = 'Daily free translation limit reached. Please try again in a few hours.';
+        statusEl.textContent = 'Quota limit hit.';
+        return;
+      }
+      if (String(translated2).toUpperCase().includes('INVALID') && status2 && String(status2) !== '200'){
+        outputText.textContent = 'This language pair could not be processed. Please try again.';
+        statusEl.textContent = 'Service error (' + status2 + ').';
+        return;
+      }
+      outputText.textContent = translated2;
+      statusEl.textContent = '';
+    } catch(mErr){
+      outputText.textContent = 'Could not translate right now. Please check your internet connection and try again.';
+      statusEl.textContent = 'Error: ' + mErr.message;
+    }
+  } finally {
+    translateBtn.disabled = false;
+  }
+}
+
+swapBtn.addEventListener('click', () => {
+  const prevInput = inputText.value;
+  const prevOutput = outputText.classList.contains('placeholder') ? '' : outputText.textContent;
+  const newFrom = current.to, newTo = current.from;
+  setLanguages(newFrom, newTo);
+  swapBtn.classList.add('spin');
+  setTimeout(() => swapBtn.classList.remove('spin'), 250);
+  inputText.value = prevOutput || prevInput;
+});
+
+translateBtn.addEventListener('click', translate);
+inputText.addEventListener('keydown', (e) => {
+  if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') translate();
+});
+
+fromDD.updateLabel();
+toDD.updateLabel();
+updateThanglishVisibility();
+</script>
+</body>
+</html>
